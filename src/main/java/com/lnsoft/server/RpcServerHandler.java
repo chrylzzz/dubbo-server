@@ -1,4 +1,4 @@
-package com.lnsoft;
+package com.lnsoft.server;
 
 import com.lnsoft.bean.RpcRequest;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 与客户端交互：
  * 服务端往客户端写数据
  * io交互，继承ChannelInboundHandlerAdapter
  * <p>

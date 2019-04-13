@@ -1,4 +1,4 @@
-package com.lnsoft;
+package com.lnsoft.server;
 
 import com.lnsoft.registry.IRegisterCenter;
 import com.lnsoft.registry.IRegisterCenterImpl;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 基于Netty：
+ * 基于Netty：与客户端交互
  * 服务端被调用：监听的代码(发布服务，等待被调用，时刻监听)
  * <p>
  * Created By Chr on 2019/4/11/0011.
