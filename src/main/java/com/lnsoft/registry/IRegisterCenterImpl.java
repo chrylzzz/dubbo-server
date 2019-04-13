@@ -6,7 +6,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
 /**
- * （1）注册功能
+ * （1）注册功能：注册到Zk
  * <p>
  * Created By Chr on 2019/4/11/0011.
  */
@@ -18,7 +18,7 @@ public class IRegisterCenterImpl implements IRegisterCenter {
     {
 
         curatorFramework = CuratorFrameworkFactory.builder()
-                .connectString(ZkConfig.CONNECTION_STR).sessionTimeoutMs(4000)
+                .connectString(ZkConfig.CONNECTION_STR).sessionTimeoutMs(4000)//连接zk
                 .retryPolicy(new ExponentialBackoffRetry(1000, 10)).build();
 
         curatorFramework.start();
@@ -29,7 +29,7 @@ public class IRegisterCenterImpl implements IRegisterCenter {
     //serviceAddress:127.0.0.1:8080
     //将serviceName与serviceAddress绑定在一起注册在zk上
     @Override
-    public void doRegister(String serviceName, String serviceAddress) {
+    public void doRegister(String serviceName, String serviceAddress) {//"com.lnsoft.IChr","127.0.0.1:9090"
 
         //registrys/com.lnsoft.IChrHello
         String servicePath = ZkConfig.ZK_REGISTER_PATH + "/" + serviceName;
@@ -45,7 +45,7 @@ public class IRegisterCenterImpl implements IRegisterCenter {
             }
             //代码执行在这里，肯定存在 /registrys/IChrHello
             //服务发布的地址是：127.0.0.1:8080   address   registrys/com.lnsoft.IChrHello  127.0.0.1:8080,8081,8082 临时节点
-            String addressPath = servicePath + "/" + serviceAddress;
+            String addressPath = servicePath + "/" + serviceAddress;//registrys/com.lnsoft.IChrHello/127.0.0.1:9090
 
             //服务地址url，临时的：为什么？---因为比如活动，有上下线，下线了就是临时的，下线之后就不存在zk
             String rsNode = curatorFramework.create().withMode(CreateMode.EPHEMERAL)//临时的
