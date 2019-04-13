@@ -57,6 +57,15 @@ public class RpcServer {
 //                    initialBytesToStrip: 解析时候跳过多少个长度
 //                    failFast; 为true，当frame长度超过maxFrameLength时立即报TooLongFrameException异常，为false，读取完整个帧再报异
 
+
+
+//                            pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,));
+//                            pipeline.addLast("frameEncoder",new LengthFieldPrepender(4));
+//                            pipeline.addLast("encoder",new ObjectEncoder());
+//                            pipeline.addLast("decoder",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.));
+
+
+
                     //百度,第三个参数开始：百度的4,0,4
                     pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,4,0,4 ));
                     pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
