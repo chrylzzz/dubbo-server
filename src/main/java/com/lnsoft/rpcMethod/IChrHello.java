@@ -1,4 +1,4 @@
-package com.lnsoft;
+package com.lnsoft.rpcMethod;
 
 /**
  * 对外提供的接口

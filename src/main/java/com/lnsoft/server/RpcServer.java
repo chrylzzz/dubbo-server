@@ -2,7 +2,6 @@ package com.lnsoft.server;
 
 import com.lnsoft.registry.IRegisterCenter;
 import com.lnsoft.registry.IRegisterCenterImpl;
-import com.lnsoft.registry.ZkConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -25,11 +24,21 @@ import java.util.Map;
  */
 public class RpcServer {
 
-
+    private String serviceAddress;
     //百度成员变量的创建
-    private static final String serviceAddress = ZkConfig.CONNECTION_STR;
+    //private static final String serviceAddress = ZkConfig.CONNECTION_STR;
     private Map<String, Object> handlerMap = new HashMap<>();
     private IRegisterCenter registerCenter = new IRegisterCenterImpl();
+
+    public RpcServer(IRegisterCenter registerCenter, String serviceAddress) {
+        this.serviceAddress = serviceAddress;
+        this.registerCenter = registerCenter;
+    }
+
+    //zk端口yu发布的方法绑定
+    public void bind(Object object) {
+
+    }
 
     //不完整，百度吧
     public void publisher() {
@@ -58,22 +67,22 @@ public class RpcServer {
 //                    failFast; 为true，当frame长度超过maxFrameLength时立即报TooLongFrameException异常，为false，读取完整个帧再报异
 
 
-
 //                            pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,));
 //                            pipeline.addLast("frameEncoder",new LengthFieldPrepender(4));
 //                            pipeline.addLast("encoder",new ObjectEncoder());
 //                            pipeline.addLast("decoder",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.));
 
 
-
                     //百度,第三个参数开始：百度的4,0,4
-                    pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,4,0,4 ));
+                    pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
                     pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
                     pipeline.addLast("encoder", new ObjectEncoder());
                     //百度,第2个参数开始：百度的.cacheDisabled(null)
                     pipeline.addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
-                    //Netty 不管  连接  10数据库交互 socket.IO   ----》都是用handler  类似于SpringMVC 的 Handler
-                    //往pipeline里添加handler，这是netty核心
+                    //Netty 不管  连接  10数据交互 socket.IO   ----》都是用handler  类似于SpringMVC 的 Handler
+                    /**
+                     * 往pipeline里添加handler，这是netty核心，netty让io交互
+                     */
                     pipeline.addLast(new RpcServerHandler(handlerMap));
 
 
@@ -86,7 +95,9 @@ public class RpcServer {
             String ip = address[0];
             int port = Integer.parseInt(address[1]);
 
-            //监听的url
+            /**
+             * 服务端监听的url
+             */
             ChannelFuture future = bootstrap.bind(ip, port).sync();
 
             System.out.println(" Netty服务端启动成功，等待客户端的连接: ");

@@ -1,4 +1,4 @@
-package com.lnsoft;
+package com.lnsoft.rpcMethod;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.lnsoft;
+package com.lnsoft.rpcMethod;
 
 /**
  * Created By Chr on 2019/4/11/0011.

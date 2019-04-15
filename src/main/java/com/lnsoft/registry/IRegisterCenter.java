@@ -5,7 +5,7 @@ package com.lnsoft.registry;
  */
 public interface IRegisterCenter {
 
-    //serviceName:com.lnsoft.IChrHello
+    //serviceName:com.lnsoft.rpcMethod.IChrHello
 
     //serviceAddress:127.0.0.1:8080
 
