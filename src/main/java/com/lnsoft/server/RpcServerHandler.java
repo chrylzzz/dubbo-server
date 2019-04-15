@@ -1,6 +1,7 @@
 package com.lnsoft.server;
 
 import com.lnsoft.bean.RpcRequest;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * <p>
  * Created By Chr on 2019/4/11/0011.
  */
+@ChannelHandler.Sharable//Handler is not a @Sharable handler, so can't be added or removed multiple times
 public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     //百度
     private Map<String, Object> handlerMap = new HashMap<>();
