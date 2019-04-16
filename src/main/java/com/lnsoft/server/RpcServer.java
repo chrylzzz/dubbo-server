@@ -12,9 +12,11 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Netty：与客户端交互
@@ -55,10 +57,10 @@ public class RpcServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.channel(NioServerSocketChannel.class);
-            bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+            bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {//连接处理
                 @Override
                 protected void initChannel(SocketChannel channel) throws Exception {
-                    ChannelPipeline pipeline = channel.pipeline();
+                    ChannelPipeline pipeline = channel.pipeline();//任务处理
 //                    maxFrameLength:     帧的最大长度
 //                    lengthFieldOffset length:       字段偏移的地址
 //                    lengthFieldLength length;字段所占的字节长
@@ -84,10 +86,16 @@ public class RpcServer {
                      * 往pipeline里添加handler，这是netty核心，netty让io交互
                      */
                     pipeline.addLast(new RpcServerHandler(handlerMap));
-
+                    //心跳检测，读超时，写超时，读写超时
+                    pipeline.addLast(
+                            new IdleStateHandler(5,//
+                                    0,//
+                                    0,//
+                                    TimeUnit.SECONDS));
 
                 }
-            }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
+            }).option(ChannelOption.SO_BACKLOG, 128)//保持连接数
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);//有数据立即发送
 
             //通过netty  进行监听  8080
 
