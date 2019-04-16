@@ -63,4 +63,37 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
 
     }
+
+    /**
+     * 客户端与服务端连接的时候调用
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+    }
+
+    /**
+     * 客户端和服务端断开连接的时候调用
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+    }
+
+    /**
+     * 服务端接收客户端发送过来的数据结束后调用
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        super.channelReadComplete(ctx);
+    }
 }
