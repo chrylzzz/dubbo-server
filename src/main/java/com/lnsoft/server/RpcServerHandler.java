@@ -57,6 +57,7 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
         }
 
         //服务端处理的数据，写给客户端result结果，客户端在通过handler进行处理
+//        ctx.writeAndFlush(result);    Netty writeAndFlush()方法分为两步, 先 write 再 flush
         ctx.write(result);
         ctx.flush();
         ctx.close();
