@@ -26,7 +26,7 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
         this.handlerMap = handlerMap;
     }
 
-    /**
+    /**服务端处理客户端的请求的核心方法，接收发
      * @param ctx 发送数据
      * @param msg 接收数据
      * @throws Exception
@@ -96,4 +96,19 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         super.channelReadComplete(ctx);
     }
+
+    /**
+     * 出现异常时候调用
+     *
+     * @param ctx
+     * @param cause
+     * @throws Exception
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
+    }
+
+
+
 }
