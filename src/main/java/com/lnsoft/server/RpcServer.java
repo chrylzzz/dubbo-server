@@ -37,6 +37,11 @@ public class RpcServer {
         this.registerCenter = registerCenter;
     }
 
+    /**
+     * 未实现
+     *
+     * @param object
+     */
     //zk端口yu发布的方法绑定
     public void bind(Object object) {
 
