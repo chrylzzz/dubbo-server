@@ -100,7 +100,7 @@ public class RpcServer {
 
                 }
             }).option(ChannelOption.SO_BACKLOG, 128)//保持连接数
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);//有数据立即发送
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);//true有数据立即发送
 
             //通过netty  进行监听  8080
 
