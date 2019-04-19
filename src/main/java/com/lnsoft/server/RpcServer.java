@@ -12,6 +12,8 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
 import java.util.HashMap;
@@ -69,6 +71,7 @@ public class RpcServer {
                     .option(ChannelOption.SO_BACKLOG, 1024)//指定tcp缓冲区
                     .option(ChannelOption.SO_SNDBUF, 32 * 1024)//设置发送缓冲区大小
                     .option(ChannelOption.SO_RCVBUF, 32 * 1024)//设置接收缓冲区大小
+                    .handler(new LoggingHandler(LogLevel.INFO))//控制台输出服务端日志
                     .childOption(ChannelOption.SO_KEEPALIVE, true)//保持连接数
                     .childHandler(new ChannelInitializer<SocketChannel>() {//连接处理
                         @Override
