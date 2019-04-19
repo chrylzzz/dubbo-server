@@ -64,11 +64,16 @@ public class RpcServer {
             //启动netty服务
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup);
-            bootstrap.channel(NioServerSocketChannel.class);
-            bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {//连接处理
-                @Override
-                protected void initChannel(SocketChannel channel) throws Exception {
-                    ChannelPipeline pipeline = channel.pipeline();//任务处理
+            bootstrap.channel(NioServerSocketChannel.class);//指定Nio的模式，还可以为NioSocketChannel.class为客户端模式
+            bootstrap
+                    .option(ChannelOption.SO_BACKLOG, 1024)//指定tcp缓冲区
+                    .option(ChannelOption.SO_SNDBUF, 32 * 1024)//设置发送缓冲区大小
+                    .option(ChannelOption.SO_RCVBUF, 32 * 1024)//设置接收缓冲区大小
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)//保持连接数
+                    .childHandler(new ChannelInitializer<SocketChannel>() {//连接处理
+                        @Override
+                        protected void initChannel(SocketChannel channel) throws Exception {
+                            ChannelPipeline pipeline = channel.pipeline();//任务处理
 //                    maxFrameLength:     帧的最大长度
 //                    lengthFieldOffset length:       字段偏移的地址
 //                    lengthFieldLength length;字段所占的字节长
@@ -83,27 +88,29 @@ public class RpcServer {
 //                            pipeline.addLast("decoder",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.));
 
 
-                    //百度,第三个参数开始：百度的4,0,4
-                    pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-                    pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
-                    pipeline.addLast("encoder", new ObjectEncoder());
-                    //百度,第2个参数开始：百度的.cacheDisabled(null)
-                    pipeline.addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
-                    //Netty 不管  连接  10数据交互 socket.IO   ----》都是用handler  类似于SpringMVC 的 Handler
-                    /**
-                     * 往pipeline里添加handler，这是netty核心，netty让io交互
-                     */
-                    pipeline.addLast(new RpcServerHandler(handlerMap));
-                    //心跳检测，读超时，写超时，读写超时
-                    pipeline.addLast(
-                            new IdleStateHandler(5,//
-                                    0,//
-                                    0,//
-                                    TimeUnit.SECONDS));
+                            //百度,第三个参数开始：百度的4,0,4
+                            pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+                            pipeline.addLast("encoder", new ObjectEncoder());
+                            //百度,第2个参数开始：百度的.cacheDisabled(null)
+                            pipeline.addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
 
-                }
-            }).option(ChannelOption.SO_BACKLOG, 128)//保持连接数
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);//true有数据立即发送
+                            //心跳检测，读超时，写超时，读写超时
+                            pipeline.addLast(
+                                    new IdleStateHandler(5,//
+                                            0,//
+                                            0,//
+                                            TimeUnit.SECONDS));
+                            //Netty 不管  连接  10数据交互 socket.IO   ----》都是用handler  类似于SpringMVC 的 Handler
+                            /**
+                             * 配置具体数据的处理方法
+                             * 往pipeline里添加handler，这是netty核心，netty让io交互
+                             */
+                            pipeline.addLast(new RpcServerHandler(handlerMap));
+
+
+                        }
+                    });
 
             //通过netty  进行监听  8080
 
@@ -112,11 +119,12 @@ public class RpcServer {
             int port = Integer.parseInt(address[1]);
 
             /**
-             * 服务端监听的url
+             * 绑定：服务端监听的url
              */
             ChannelFuture future = bootstrap.bind(ip, port).sync();
 
             System.out.println(" Netty服务端启动成功，等待客户端的连接: ");
+            //等待关闭
             future.channel().closeFuture().sync();
 
         } catch (Exception e) {
