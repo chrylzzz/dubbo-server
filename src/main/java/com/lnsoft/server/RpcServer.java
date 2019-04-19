@@ -55,6 +55,9 @@ public class RpcServer {
         }
         //启动一个监听 Netty ServerSocket(ip,port)     Socket 监听端口，io交互
         try {
+            //类似于Reactor模型:反应堆模型，n个输入同时传递给服务器处理的事件请求
+            //一个boss线程池和work线程池，boss线程只负责接收请求,监听和分发事件，分给适当的处理程序来处理IO，就像电话接线员，类似于Reactor
+            // work线程只负责处理逻辑。处理IO实际要完成的事件，类似于Handlers
             EventLoopGroup bossGroup = new NioEventLoopGroup();
             EventLoopGroup workerGroup = new NioEventLoopGroup();
 
